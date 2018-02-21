@@ -34,7 +34,6 @@ public class Problems {
         return out;
     }
 
-
     /**
      *
      * @param inputStream an input stream of integers
@@ -42,8 +41,47 @@ public class Problems {
      */
     public static double[] runningMedian(int[] inputStream) {
         double[] runningMedian = new double[inputStream.length];
-        // TODO
+        if(inputStream.length < 1) return runningMedian;
+        runningMedian[0] = inputStream[0];
+        if(inputStream.length == 1) return runningMedian;
+        PriorityQueue below_med = maxPQ();
+        PriorityQueue above_med = minPQ();
+        for(int i = 1; i < inputStream.length; i++){
+            if(inputStream[i] > runningMedian[i-1]){
+                if((i+1) %2 == 0) {
+                    above_med.offer((double) inputStream[i]);
+                    below_med.offer(runningMedian[i - 1]);
+                    runningMedian[i] = ((double) above_med.peek() + (double) below_med.peek()) / 2.0;
+                }
+                else {
+                    if(((double)above_med.peek() < (double)inputStream[i])) {
+                        runningMedian[i] = (double) above_med.poll();
+                        above_med.offer((double) inputStream[i]);
+                    }
+                    else {
+                        runningMedian[i] = (double) inputStream[i];
+                    }
+                }
+            }
+            else{
+                if((i+1) %2 == 0) {
+                    below_med.offer((double) inputStream[i]);
+                    above_med.offer(runningMedian[i - 1]);
+                    runningMedian[i] = ((double) above_med.peek() + (double) below_med.peek()) / 2.0;
+                }
+                else {
+                    if(((double)below_med.peek() > (double)inputStream[i])) {
+                        runningMedian[i] = (double) below_med.poll();
+                        below_med.offer((double) inputStream[i]);
+                    }
+                    else {
+                        runningMedian[i] = (double) inputStream[i];
+                    }
+                }
+            }
+        }
         return runningMedian;
     }
+
 
 }
