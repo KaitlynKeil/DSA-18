@@ -1,5 +1,7 @@
 import java.util.LinkedList;
 
+import static java.lang.Math.abs;
+
 public class RadixSort {
 
     /**
@@ -19,19 +21,23 @@ public class RadixSort {
      */
     static void countingSortByDigit(int[] A, int b, int n) {
         LinkedList<Integer>[] L = new LinkedList[b];
-        for (int i = 0; i < b; i++)
-            L[i] = new LinkedList<>();
-        for (int i : A) {
-            // TODO: Extract the relevant digit from i, and add i to the corresponding Linked List.
+        for (int i = 0; i < b; i++) // O(b)
+            L[i] = new LinkedList<>(); // O(1)
+        for (int i : A) { // O(N)
+            int digit = abs(getNthDigit(i, b, n)); // O(1)
+            L[digit].add(i); // O(1) b/c linked list
         }
         int j = 0; // index in A to place numbers
-        for (LinkedList<Integer> list : L) {
-            // TODO: Put all numbers in the linked lists into A
+        for (LinkedList<Integer> list : L) { // O(b)
+            while(!list.isEmpty()){ // O(N), in essence
+                A[j] = list.poll();
+                j++;
+            }
         }
     }
 
     /**
-     * Runtime: TODO: Express your runtime in terms of n, b, and w
+     * Runtime: O(w(N+b))
      *
      * n: length of array
      * w: word length of integers A in base b (equal to log base b of k (log_b k) )
@@ -41,10 +47,12 @@ public class RadixSort {
     static void radixSort(int[] A, int b) {
         // Calculate the upper-bound for numbers in A
         int k = A[0] + 1;
-        for (int i = 1; i < A.length; i++)
+        for (int i = 1; i < A.length; i++) // O(N)
             k = (A[i] + 1 > k) ? A[i] + 1 : k;
         int w = (int) Math.ceil(Math.log(k) / Math.log(b)); // w = log base b of k, word length of numbers
-        // TODO: Perform radix sort
+        for(int i = 0; i <= w; i++){ // Runs O(w) times
+            countingSortByDigit(A, b, i); // O(N + b)
+        }
     }
 
 }
