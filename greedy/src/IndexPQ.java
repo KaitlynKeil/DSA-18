@@ -61,6 +61,17 @@ public class IndexPQ<Key extends Comparable<Key>> {
         sink(qp[i]);
     }
 
+    public Key getKey(int i) {
+        if (i < 0 || i >= maxN) throw new IllegalArgumentException();
+        if (!contains(i)) throw new NoSuchElementException("index is not in the priority queue");
+        return keys[i];
+    }
+
+    public Key minKey() {
+        if (n == 0) throw new NoSuchElementException("Priority queue underflow");
+        return keys[pq[1]];
+    }
+
     @Deprecated
     public void change(int i, Key key) {
         changeKey(i, key);
